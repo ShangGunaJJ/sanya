@@ -1,0 +1,343 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Index.cshtml";
+}
+<link href="~/Content/bootstrap/bootstrap.min.css" rel="stylesheet" />
+<link href="~/Content/richuxisan/ui.css" rel="stylesheet" />
+<link href="~/Content/richuxisan/jquery-ui.css" rel="stylesheet" />
+<link href="~/Content/richuxisan/local.css" rel="stylesheet" />
+
+
+<script src="~/Content/richuxisan/jquery.min.js"></script>
+<script src="~/Content/bootstrap/bootstrap.min.js"></script>
+<script src="~/Content/richuxisan/jquery-ui.min.js"></script>
+<script src="~/Content/richuxisan/const.js"></script>
+<script src="~/Content/richuxisan/ui.js"></script>
+<script src="~/Content/richuxisan/Page.js"></script>
+
+<style>
+    html {
+        height: 100%;
+        width: 100%;
+    }
+
+    body {
+        background-color: #f0f0f0;
+        height: 100%;
+        width: 100%;
+        position: relative;
+    }
+
+    .Panel_container {
+        height: 100%;
+        width: 100%;
+        overflow: auto;
+        background-color: white;
+    }
+
+    header:after {
+        display: block;
+        content: "";
+        clear: both;
+    }
+
+    .ScanPanel {
+    }
+
+    header {
+        background-color: #CFD8DC;
+    }
+
+        header h4 {
+            margin: 0;
+            line-height: 32px;
+            padding-left: 20px;
+            font-size: 16px;
+        }
+
+    form.label {
+    }
+
+    .ScanBox {
+        height: 60px;
+        width: 70%;
+        display: inline-block;
+        float: left;
+    }
+
+    .form {
+        padding: 4px 22px;
+    }
+
+    .col-md-2 {
+        padding-left: 0;
+    }
+
+    .btn_Save {
+        width: 120px;
+    }
+
+    .form_content .section-header {
+        display: block;
+        background-color: #CFD8DC;
+        height: 34px;
+        line-height: 34px;
+        font-size: 16px;
+    }
+
+    .form_content .section-title {
+        font-weight: normal;
+        padding-left: 15px;
+    }
+
+    .section-header span.glyphicon {
+        display: none;
+    }
+
+    .section-body {
+        padding: 0;
+    }
+</style>
+<div class="Panel_container">
+    <div class="ScanPanel">
+        <header>
+            <h4>发票采集</h4>
+        </header>
+        <div class="form">
+            <div class="section" style="height:100px;">
+                <label style="display:block;">条形码输入框</label>
+                <input type="text" class="textbox ScanBox form-control" placeholder="条形码" />
+                <p class="bg-info" style="padding: 12px;display: inline-block; width: 28%; margin-left: 10px;">提示：使用条码枪时，请将光标定位以下文本输入框内。(确保当前输入法为英文状态)</p>
+            </div>
+            <div class="section" style="height:70px;">
+                <div class="col-md-2">
+                    <label>发票代码</label>
+                    <input type="text" class="textbox InvCode form-control" placeholder="10或12位数字" />
+                </div>
+                <div class="col-md-2">
+                    <label>发票号码</label>
+                    <input type="text" class="textbox InvNumber form-control" placeholder="8位数字" />
+                </div>
+                <div class="col-md-2">
+                    <label>开票日期</label>
+                    <input type="text" class="textbox InvDate form-control" placeholder="格式：2017-03-2" />
+                </div>
+                <div class="col-md-2">
+                    <label>开具金额</label>
+                    <input type="text" class="textbox InvMoney form-control" placeholder="不含税金额" />
+                </div>
+                <div class="col-md-2 hide">
+                    <label>校验码</label>
+                    <input type="text" class="textbox InvXYM form-control" placeholder="校验码后6位数" />
+                </div>
+                <div class="col-md-2">
+                    <label style="margin-right:10px;"><input type="checkbox" checked="checked" name="IsAutoSave" class="IsAutoSave" />自动保存</label> 
+                        <input class="btn btn-success btn_Save" type="button" value="保存">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form_content">
+
+    </div>
+</div>
+<script>
+    var _control =
+    (function () {
+        var form = new FormControl();
+        form.RecordID = 0;
+        form.PageType = "Form";
+        form.ShowSaveAndNew = true;
+
+        var Elem4 = new RepeatTable();
+        Elem4.ID = 'Elem4';
+        Elem4.Name = '';
+        Elem4.Title = '待提交发票';
+        var tool0 = new PageTool();
+        tool0.ID = 'tool0';
+        tool0.Name = '保存';
+        tool0.Icon = 'content_content_copy zkbr-iconT-10 iconColor-white';
+        tool0.SelectType = 0; 
+        tool0.ToolType = "Custom";
+        Elem4.AddTool(tool0);
+
+        var tool1 = new PageTool();
+        tool1.ID = 'tool1';
+        tool1.Name = '删除';
+        tool1.Icon = 'action_delete zkbr-iconT-10 iconColor-white';
+        tool1.SelectType = 0;
+        tool1.ToolType = "Delete";
+        Elem4.AddTool(tool1);
+
+        form.AddElement(form, Elem4);
+        var Elem5 = new TextBox();
+        Elem5.ID = 'dq';
+        Elem5.Name = 'dq';
+        Elem5.Title = '地区';
+        Elem5.Width = 150;
+        Elem5.DBType = 4;
+        form.AddElement(Elem4, Elem5);
+        var Elem6 = new TextBox();
+        Elem6.ID = 'fplx';
+        Elem6.Name = 'fplx';
+        Elem6.Title = '发票类型';
+        Elem6.Width = 150;
+        Elem6.DBType = 4;
+        form.AddElement(Elem4, Elem6);
+        var Elem7 = new TextBox();
+        Elem7.ID = 'fpmc';
+        Elem7.Name = 'fpmc';
+        Elem7.Title = '发票名称';
+        Elem7.Width = 150;
+        Elem6.DBType = 4;
+        form.AddElement(Elem4, Elem7);
+        var Elem8 = new TextBox();
+        Elem8.ID = 'fpdm';
+        Elem8.Name = 'fpdm';
+        Elem8.Title = '发票代码';
+        Elem8.Width = 100;
+        Elem8.DBType = 2;
+        form.AddElement(Elem4, Elem8);
+        var Elem9 = new TextBox();
+        Elem9.ID = 'fphm';
+        Elem9.Name = 'fphm';
+        Elem9.Title = '发票号码';
+        Elem9.Width = 100;
+        Elem9.DBType = 2;
+        form.AddElement(Elem4, Elem9);
+        var Elem10 = new TextBox();
+        Elem10.ID = 'kprq';
+        Elem10.Name = 'kprq';
+        Elem10.Title = '开票日期';
+        Elem10.Width = 100;
+        Elem10.DBType = 2;
+        form.AddElement(Elem4, Elem10);
+        var Elem11 = new TextBox();
+        Elem11.ID = 'je';
+        Elem11.Name = 'je';
+        Elem11.Title = '不含税金额';
+        Elem11.Width = 100;
+        Elem11.DBType = 2;
+        form.AddElement(Elem4, Elem11);
+        var Elem12 = new TextBox();
+        Elem12.ID = 'jym';
+        Elem12.Name = 'jym';
+        Elem12.Title = '检验码';
+        Elem12.Width = 100;
+        Elem12.DBType = 2;
+        form.AddElement(Elem4, Elem12);
+
+
+        var rule1 = new PageRule(tool0, 'Click', 0, 1);
+        rule1.func = function () {
+            alert(1);
+        };
+        $(document.body).on("keydown", ".ScanBox", function (e) {
+            if (e.keyCode==13) {
+                var box = $(".ScanBox");
+                var value = box.val();
+                if (value == "") {
+                    $ace.msg("条形码不能为空！"); return;
+                }
+                if (value.indexOf("，") > -1) {
+                    $ace.alert("请将当前输入法切换成英文半角状态！");
+                    box.val("");
+                    box.focus();
+                    return;
+                }
+                var temp = value.split(',');
+                if (temp.length < 6) {
+                    $ace.alert("当前二维码内容不是有效的发票信息，请重新采集！");
+                    box.focus();
+                    return;
+                }
+                if ($(".IsAutoSave")[0].checked) {
+                    var rows = _control.Elements[0].GetRows();
+                    for (var i = 0; i < rows.length; i++) {
+                        if (rows[i] == temp[2] && rows[i] == temp[3]) {
+                            $ace.alert("发票代码：" + temp[2] + ",发票号码：" + temp[3] + "已采集成功.");
+                            return;
+                        }
+                    }
+                } else {
+                    var fplx = temp[1];
+                    $(".InvCode").val(temp[2]);
+                    $(".InvNumber").val(temp[3]);
+                    $(".InvDate").val( temp[5]);
+                    if (fplx == "01") {
+                        $(".InvMoney").val(temp[4]);
+                    }
+                    else {
+                        if (tmp[6].Length > 6)
+                            txtkjje.Text = tmp[6].Substring(tmp[6].Length - 6, 6);
+                    }
+                    txtBarcode.Text = "";
+                    txtBarcode.Focus();
+                    changeContorl();
+                }
+            }
+        });
+        return form;
+    })();
+    $(function () {
+        _control.Init();
+
+    });
+
+    function changeContorl() {
+
+    }
+    function getFPLX(sfpdm)
+    {
+        var a = sfpdm;
+        var b;
+        var c = "99";
+
+        if (a.Length == 12)
+        {
+            b = a.Substring(7, 1);
+            if (c == "99")
+            {  //增加判断，判断是否为新版电子票
+                if (a.Substring(0, 1) == "0" && a.Substring(10, 2) == "11")
+                {
+                    c = "10";
+                }
+                if (a.Substring(0, 1) == "0" && (a.Substring(10, 2) == "06" || a.Substring(10, 2) == "07"))
+                {  //判断是否为卷式发票  第1位为0且第11-12位为06或07
+                    c = "11";
+                }
+            }
+            if (c == "99")
+            { //如果还是99，且第8位是2，则是机动车发票
+                if (b == "2" && a.Substring(0, 1) != "0")
+                {
+                    c = "03";
+                }
+                else
+                {
+                    c = "10";
+                }
+            }
+        }
+        else if (a.Length == 10)
+        {
+            b = a.Substring(7, 1);
+            if (b == "1" || b == "5")
+            {
+                c = "01";
+            }
+            else if (b == "6" || b == "3")
+            {
+                c = "04";
+            }
+            else if (b == "7" || b == "2")
+            {
+                c = "02";
+            }
+        }
+        if (c == "99")
+            c = "";
+        return c;
+    }
+</script>
